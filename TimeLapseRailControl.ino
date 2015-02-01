@@ -36,8 +36,6 @@ long brakeT = 0;
 
 
 unsigned long now = 0;
-//unsigned long onTime = 0;
-//unsigned long onDelay = 0;
 unsigned long lastInput = 0;
 
 enum operatingState { 
@@ -133,7 +131,6 @@ public:
 
 };
 
-
 Motor motor1(aPWMPin, aDirPin, aBrakePin, pulseT, pulseInt, brakeT);
 
 void setup() {
@@ -159,7 +156,7 @@ void loop() {
   {
     uint8_t buttons = 0;
     buttons = ReadButtons();
-
+    
     if (buttons & BUTTON_LEFT) {
       motor1.direction(LEFT);
     }
@@ -195,10 +192,7 @@ void loop() {
       lcd.setCursor(0,1);
       lcd.print(motor1.stepCount());
     }
-
-
     motor1.Update();
-
   }
 }
 
@@ -213,12 +207,14 @@ uint8_t ReadButtons()
   return buttons;
 }
 
-void setMotor (int speed, boolean reverse)
+/*void setMotor (int speed, boolean reverse)
 {
   digitalWrite(aDirPin, reverse);
   analogWrite(aPWMPin, speed);
 }
+*/
 
+// Off mode
 void Off()
 {
   lcd.setBacklight(0);
@@ -230,6 +226,9 @@ void Off()
   opState = RUN; // start control
 }
 
+// ***************
+// Set Pulse width
+// ***************
 void Set_PulseWidth()
 {
   lcd.setBacklight(WHITE);
@@ -276,6 +275,9 @@ void Set_PulseWidth()
   }
 }
 
+// ******************
+// Set pulse interval
+// ******************
 void Set_PulseInterval()
 {
   lcd.setBacklight(WHITE);
@@ -324,10 +326,92 @@ void Set_PulseInterval()
 }
 
 
+// defaults
+// pulseT = 25
+// pulseInt = 1500
+// shotCountsOrTimedMode = whatever
+
+/*
+// ************************************************
+// Save any parameter changes to EEPROM
+// ************************************************
+void SaveParameters()
+{
+   if (Setpoint != EEPROM_readDouble(SpAddress))
+   {
+      EEPROM_writeDouble(SpAddress, Setpoint);
+   }
+   if (Kp != EEPROM_readDouble(KpAddress))
+   {
+      EEPROM_writeDouble(KpAddress, Kp);
+   }
+   if (Ki != EEPROM_readDouble(KiAddress))
+   {
+      EEPROM_writeDouble(KiAddress, Ki);
+   }
+   if (Kd != EEPROM_readDouble(KdAddress))
+   {
+      EEPROM_writeDouble(KdAddress, Kd);
+   }
+}
+
+// ************************************************
+// Load parameters from EEPROM
+// ************************************************
+void LoadParameters()
+{
+  // Load from EEPROM
+   Setpoint = EEPROM_readDouble(SpAddress);
+   Kp = EEPROM_readDouble(KpAddress);
+   Ki = EEPROM_readDouble(KiAddress);
+   Kd = EEPROM_readDouble(KdAddress);
+   
+   // Use defaults if EEPROM values are invalid
+   if (isnan(Setpoint))
+   {
+     Setpoint = 60;
+   }
+   if (isnan(Kp))
+   {
+     Kp = 500;
+   }
+   if (isnan(Ki))
+   {
+     Ki = 0.5;
+   }
+   if (isnan(Kd))
+   {
+     Kd = 0.1;
+   }  
+}
 
 
+// ************************************************
+// Write floating point values to EEPROM
+// ************************************************
+void EEPROM_writeDouble(int address, double value)
+{
+   byte* p = (byte*)(void*)&value;
+   for (int i = 0; i < sizeof(value); i++)
+   {
+      EEPROM.write(address++, *p++);
+   }
+}
 
-
+// ************************************************
+// Read floating point values from EEPROM
+// ************************************************
+double EEPROM_readDouble(int address)
+{
+   double value = 0.0;
+   byte* p = (byte*)(void*)&value;
+   for (int i = 0; i < sizeof(value); i++)
+   {
+      *p++ = EEPROM.read(address++);
+   }
+   return value;
+}
+*/
 
 
 
